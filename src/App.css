@@ -39,7 +39,8 @@ body {
       width: 300px;
       height: calc(100vh - 60px);
       background: pink;
-transition: left 0.5s ease-in-out,right 0.5s ease-in-out;
+      transition: left 0.5s ease-in-out, right 0.5s ease-in-out;
+      z-index: 10;
     }
     .Menu {
       left: 0;
@@ -49,6 +50,17 @@ transition: left 0.5s ease-in-out,right 0.5s ease-in-out;
       right: 0;
       background: orange;
       border-left: 1px solid #000;
+    }
+    .Main {
+      position: relative;
+      #threejs-3d-container {
+        position: absolute;
+        z-index: 1;
+      }
+      #threejs-2d-container {
+        position: absolute;
+        z-index: 2;
+      }
     }
   }
 }
