@@ -53,6 +53,13 @@ body {
     }
     .Main {
       position: relative;
+      height: calc(100vh - 60px);
+      .mode-change-btns {
+        position: absolute;
+        z-index: 3;
+        bottom: 20px;
+        left: 20px;
+      }
       #threejs-3d-container {
         position: absolute;
         z-index: 1;
