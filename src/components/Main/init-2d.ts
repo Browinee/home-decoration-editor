@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import {
-    OrbitControls
+    OrbitControls,
 } from 'three/addons/controls/OrbitControls.js';
+import { MapControls } from 'three/addons/controls/MapControls.js';
 
 // 創建場景和基本設置
 const createScene = () => {
@@ -32,8 +33,8 @@ const createCamera = () => {
     const height = window.innerHeight - 60;
 
     const camera = new THREE.PerspectiveCamera(60, width / height, 1, 10000);
-    camera.position.set(500, 500, 500);
-    camera.lookAt(0, 0, 0);
+    camera.position.set(200, 500, -100);
+    camera.lookAt(200, 0, -100);
 
     return camera;
 };
@@ -53,8 +54,9 @@ const createRenderer = () => {
 };
 
 // 設置渲染循環
-const setupRenderLoop = (renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera) => {
+const setupRenderLoop = (renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera, controls: OrbitControls) => {
     const render = () => {
+        controls.update();
         renderer.render(scene, camera);
         requestAnimationFrame(render);
     };
@@ -77,40 +79,42 @@ const setupWindowResize = (renderer: THREE.WebGLRenderer, camera: THREE.Perspect
 
 // 設置控制器
 const setupControls = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {
-    const controls = new OrbitControls(camera, renderer.domElement);
+    // const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new MapControls(camera, renderer.domElement);
+    controls.enableRotate = false;
     return controls;
 };
 
 // 主要的初始化函數
 export function init2D(dom: HTMLElement) {
-    // 1. 創建場景
-    const scene = createScene();
+  // 1. 創建場景
+  const scene = createScene();
 
-    // 2. 設置燈光
-    setupLights(scene);
+  // 2. 設置燈光
+  setupLights(scene);
 
-    // 3. 創建相機
-    const camera = createCamera();
+  // 3. 創建相機
+  const camera = createCamera();
 
-    // 4. 創建渲染器
-    const renderer = createRenderer();
+  // 4. 創建渲染器
+  const renderer = createRenderer();
 
-    // 5. 設置渲染循環
-    setupRenderLoop(renderer, scene, camera);
+  // 5. 設置控制器
+  const controls = setupControls(camera, renderer);
 
-    // 6. 將渲染器添加到 DOM
-    dom.append(renderer.domElement);
+  // 6. 設置渲染循環
+  setupRenderLoop(renderer, scene, camera, controls);
 
-    // 7. 設置視窗調整
-    setupWindowResize(renderer, camera);
+  // 7. 將渲染器添加到 DOM
+  dom.append(renderer.domElement);
 
-    // 8. 設置控制器
-    const controls = setupControls(camera, renderer);
+  // 8. 設置視窗調整
+  setupWindowResize(renderer, camera);
 
-    return {
-        scene,
-        camera,
-        renderer,
-        controls
-    };
+  return {
+    scene,
+    camera,
+    renderer,
+    controls,
+  };
 }

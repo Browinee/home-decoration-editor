@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {
     OrbitControls
 } from 'three/addons/controls/OrbitControls.js';
+import { MapControls } from 'three/examples/jsm/controls/MapControls.js';
 
 // 創建場景和基本設置
 const createScene = () => {
@@ -32,8 +33,8 @@ const createCamera = () => {
     const height = window.innerHeight - 60;
 
     const camera = new THREE.PerspectiveCamera(60, width / height, 1, 10000);
-    camera.position.set(500, 500, 500);
-    camera.lookAt(0, 0, 0);
+    camera.position.set(200, 500, -100);
+    camera.lookAt(200, 0, -100);
 
     return camera;
 };
@@ -77,7 +78,8 @@ const setupWindowResize = (renderer: THREE.WebGLRenderer, camera: THREE.Perspect
 
 // 設置控制器
 const setupControls = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {
-    const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new MapControls(camera, renderer.domElement);
+    controls.enableRotate = false;
     return controls;
 };
 
