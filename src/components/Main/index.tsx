@@ -9,7 +9,7 @@ function Main() {
   const container2DRef = useRef<HTMLDivElement>(null);
   const scene3DRef = useRef<THREE.Scene>(null);
   const scene2DRef = useRef<THREE.Scene>(null);
-  const [curMode, setCurMode] = useState("2d");
+  const [curMode, setCurMode] = useState("3d");
 
   useEffect(() => {
     if (!container3DRef.current) return;
@@ -42,45 +42,57 @@ function Main() {
 
     const walls = data.walls.map((item) => {
       const shape = new THREE.Shape();
-      shape.moveTo(item.p1.x, item.p1.z);
-      shape.lineTo(item.p2.x, item.p2.z);
-      shape.lineTo(item.p3.x, item.p3.z);
-      shape.lineTo(item.p4.x, item.p4.z);
-      shape.lineTo(item.p1.x, item.p1.z);
+      shape.moveTo(item.left.x, item.left.z);
+      // shape.lineTo(item.right.x, item.right.z);
+      shape.lineTo(item.right.x, item.right.z + item.height);
+      shape.lineTo(item.left.x, item.left.z + item.height);
+      shape.lineTo(item.left.x, item.left.z);
+
+      item.windows.forEach(win => {
+
+        const path = new THREE.Path();
+        const { x, z } = win.leftBottomPosition;
+        path.moveTo(x, z);
+        path.lineTo(x + win.width, z);
+        path.lineTo(x + win.width, z + win.height);
+        path.lineTo(x, z + win.height);
+        path.lineTo(x, z);
+        shape.holes.push(path);
+    })
+
       const geometry = new THREE.ExtrudeGeometry(shape, {
-        depth: 500,
+        depth: item.depth,
       });
       const material = new THREE.MeshPhongMaterial({
         color: "white",
       });
       const wall = new THREE.Mesh(geometry, material);
-      wall.rotateX(-Math.PI / 2);
+      // wall.rotateX(-Math.PI/2);
       return wall;
     });
 
     scene.add(...walls);
   }, [data]);
 
-
   useEffect(() => {
     const scene = scene2DRef.current!;
-    const walls = data.walls.map((item) => {
-      const shape = new THREE.Shape();
-      shape.moveTo(item.p1.x, item.p1.z);
-      shape.lineTo(item.p2.x, item.p2.z);
-      shape.lineTo(item.p3.x, item.p3.z);
-      shape.lineTo(item.p4.x, item.p4.z);
-      shape.lineTo(item.p1.x, item.p1.z);
-      const geometry = new THREE.ShapeGeometry(shape);
-      const material = new THREE.MeshPhongMaterial({
-        color: "white",
-      });
-      const wall = new THREE.Mesh(geometry, material);
-      wall.rotateX(-Math.PI / 2);
-      return wall;
-    });
+    // const walls = data.walls.map((item) => {
+    //   const shape = new THREE.Shape();
+    //   shape.moveTo(item.p1.x, item.p1.z);
+    //   shape.lineTo(item.p2.x, item.p2.z);
+    //   shape.lineTo(item.p3.x, item.p3.z);
+    //   shape.lineTo(item.p4.x, item.p4.z);
+    //   shape.lineTo(item.p1.x, item.p1.z);
+    //   const geometry = new THREE.ShapeGeometry(shape);
+    //   const material = new THREE.MeshPhongMaterial({
+    //     color: "white",
+    //   });
+    //   const wall = new THREE.Mesh(geometry, material);
+    //   wall.rotateX(-Math.PI / 2);
+    //   return wall;
+    // });
 
-    scene.add(...walls);
+    // scene.add(...walls);
   }, [data]);
 
   return (

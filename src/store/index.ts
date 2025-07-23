@@ -1,24 +1,26 @@
 import { create } from "zustand";
-
 interface Wall {
-    p1: {
+    left: {
         x: number,
         z: number
     },
-    p2: {
+    right: {
         x: number,
         z: number
     },
-    p3: {
-        x: number,
-        z: number
-    },
-    p4: {
-        x: number,
-        z: number
-    }
+    height: number,
+    depth: number,
+    windows: [
+        {
+            leftBottomPosition: {
+                x: number,
+                z: number
+            },
+            width: number,
+            height: number
+        }
+    ]
 }
-
 
 interface State {
   data: {
@@ -28,20 +30,24 @@ interface State {
 const useHouseStore = create<State>((set, get) => {
   return {
       data: {
-          walls: [
-              {
-                  p1: {x: 0, z: 0},
-                  p2: {x: 500, z: 0},
-                  p3: {x: 500, z: 30},
-                  p4: {x: 0, z: 30}
-              },
-              {
-                  p1: {x: 0, z: 0},
-                  p2: {x: 0, z: 500},
-                  p3: {x: 30, z: 500},
-                  p4: {x: 30, z: 0}
-              }
-          ]
+        walls: [
+            {
+                left: {x: 0, z: 0},
+                right: {x: 500, z: 0},
+                height: 500,
+                depth: 30,
+                windows: [
+                    {
+                        leftBottomPosition: {
+                            x: 100,
+                            z: 100
+                        },
+                        width: 300,
+                        height: 300
+                    }
+                ]
+            }
+        ]
       }
   }
 });

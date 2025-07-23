@@ -9,7 +9,7 @@ const createScene = () => {
     const scene = new THREE.Scene();
 
     // 添加坐標軸輔助器
-    const axesHelper = new THREE.AxesHelper(500);
+    const axesHelper = new THREE.AxesHelper(5000);
     scene.add(axesHelper);
 
     return scene;
@@ -79,7 +79,7 @@ const setupWindowResize = (renderer: THREE.WebGLRenderer, camera: THREE.Perspect
 // 設置控制器
 const setupControls = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {
     const controls = new MapControls(camera, renderer.domElement);
-    controls.enableRotate = false;
+    // controls.enableRotate = false;
     return controls;
 };
 
@@ -114,3 +114,4 @@ export const init3D = (dom: HTMLElement) => {
         controls
     };
 };
+
