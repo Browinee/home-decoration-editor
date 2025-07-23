@@ -4,6 +4,8 @@ import { init2D } from "./init-2d";
 import { Button } from "antd";
 import * as THREE from "three";
 import { useHouseStore } from "../../store";
+import { loadWindow } from "./utils";
+
 function Main() {
   const container3DRef = useRef<HTMLDivElement>(null);
   const container2DRef = useRef<HTMLDivElement>(null);
@@ -35,43 +37,63 @@ function Main() {
       }
     };
   }, []);
+ const loadWall = async (scene: THREE.Scene) => {
+  const walls = await Promise.all(data.walls.map(async (item) => {
+    const shape = new THREE.Shape();
+    shape.moveTo(0,0);
+    shape.lineTo(0, item.height);
+    shape.lineTo(item.width, item.height);
+    shape.lineTo(item.width, 0);
+    shape.lineTo(0, 0);
 
+    const windowModels = [];
+    for (const win of item.windows) {
+      const path = new THREE.Path();
+      const { x, z } = win.leftBottomPosition;
+      path.moveTo(x, z);
+      path.lineTo(x + win.width, z);
+      path.lineTo(x + win.width, z + win.height);
+      path.lineTo(x, z + win.height);
+      path.lineTo(x, z);
+      shape.holes.push(path);
+
+      const { model, size } = await loadWindow();
+      model.position.x = item.width / 2;
+      model.position.y = item.height / 2;
+      // model.position.z = item.position.z;
+      model.scale.set(win.width / size.x, win.height / size.y, 1);
+
+      // model.position.x = item.width / 2;
+      // model.position.y = item.height / 2;
+      // model.scale.set(win.width / size.x, win.height / size.y, 1);
+
+      // scene.add(model);
+      windowModels.push(model);
+      // wall.add(model);
+    }
+
+    const geometry = new THREE.ExtrudeGeometry(shape, {
+      depth: item.depth,
+    });
+    const material = new THREE.MeshPhongMaterial({
+      color: "white",
+    });
+    const wall = new THREE.Mesh(geometry, material);
+    wall.position.set(item.position.x, item.position.y, item.position.z);
+    wall.add(...windowModels);
+    if(item.rotationY) {
+      wall.rotation.y = item.rotationY;
+  }
+
+    return wall;
+  }));
+
+  scene.add(...walls);
+ }
   const { data } = useHouseStore();
   useEffect(() => {
     const scene = scene3DRef.current!;
-
-    const walls = data.walls.map((item) => {
-      const shape = new THREE.Shape();
-      shape.moveTo(item.left.x, item.left.z);
-      // shape.lineTo(item.right.x, item.right.z);
-      shape.lineTo(item.right.x, item.right.z + item.height);
-      shape.lineTo(item.left.x, item.left.z + item.height);
-      shape.lineTo(item.left.x, item.left.z);
-
-      item.windows.forEach(win => {
-
-        const path = new THREE.Path();
-        const { x, z } = win.leftBottomPosition;
-        path.moveTo(x, z);
-        path.lineTo(x + win.width, z);
-        path.lineTo(x + win.width, z + win.height);
-        path.lineTo(x, z + win.height);
-        path.lineTo(x, z);
-        shape.holes.push(path);
-    })
-
-      const geometry = new THREE.ExtrudeGeometry(shape, {
-        depth: item.depth,
-      });
-      const material = new THREE.MeshPhongMaterial({
-        color: "white",
-      });
-      const wall = new THREE.Mesh(geometry, material);
-      // wall.rotateX(-Math.PI/2);
-      return wall;
-    });
-
-    scene.add(...walls);
+      loadWall(scene);
   }, [data]);
 
   useEffect(() => {

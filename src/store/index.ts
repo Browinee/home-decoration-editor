@@ -1,15 +1,10 @@
 import { create } from "zustand";
 interface Wall {
-    left: {
-        x: number,
-        z: number
-    },
-    right: {
-        x: number,
-        z: number
-    },
+    position: { x: number, y: number, z: number},
+    width: number,
     height: number,
     depth: number,
+    rotationY?: number,
     windows: [
         {
             leftBottomPosition: {
@@ -28,28 +23,62 @@ interface State {
   }
 }
 const useHouseStore = create<State>((set, get) => {
-  return {
-      data: {
-        walls: [
-            {
-                left: {x: 0, z: 0},
-                right: {x: 500, z: 0},
-                height: 500,
-                depth: 30,
-                windows: [
-                    {
-                        leftBottomPosition: {
-                            x: 100,
-                            z: 100
-                        },
-                        width: 300,
-                        height: 300
-                    }
-                ]
-            }
-        ]
-      }
-  }
+    return {
+        data: {
+            walls: [
+                {
+                    position: { x: 0, y: 0, z: 0},
+                    width: 800,
+                    height: 500,
+                    depth: 30,
+                    windows: [
+                        {
+                            leftBottomPosition: {
+                                x: 100,
+                                z: 100
+                            },
+                            width: 600,
+                            height: 300
+                        }
+                    ]
+                },
+                {
+                    position: { x: 0, y: 0, z: 800},
+                    width: 800,
+                    height: 500,
+                    depth: 30,
+                    windows: [
+                        {
+                            leftBottomPosition: {
+                                x: 100,
+                                z: 100
+                            },
+                            width: 600,
+                            height: 300
+                        }
+                    ]
+                },
+                {
+                    position: { x: 0, y: 0, z: 0},
+                    width: 800,
+                    height: 500,
+                    depth: 30,
+                    rotationY: -Math.PI / 2,
+                    windows: [
+                    ]
+                },
+                {
+                    position: { x: 800, y: 0, z: 0},
+                    width: 800,
+                    height: 500,
+                    depth: 30,
+                    rotationY: -Math.PI / 2,
+                    windows: [
+                    ]
+                }
+            ]
+        }
+    }
 });
 
 export  {

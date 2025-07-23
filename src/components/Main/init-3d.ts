@@ -19,11 +19,11 @@ const createScene = () => {
 const setupLights = (scene: THREE.Scene) => {
     // 方向光
     const directionalLight = new THREE.DirectionalLight(0xffffff);
-    directionalLight.position.set(500, 400, 300);
+    directionalLight.position.set(0, 1500, 0);
     scene.add(directionalLight);
 
     // 環境光
-    const ambientLight = new THREE.AmbientLight(0xffffff);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2);
     scene.add(ambientLight);
 };
 
@@ -33,7 +33,8 @@ const createCamera = () => {
     const height = window.innerHeight - 60;
 
     const camera = new THREE.PerspectiveCamera(60, width / height, 1, 10000);
-    camera.position.set(200, 500, -100);
+    camera.position.set(1500, 1500, 1000);
+
     camera.lookAt(200, 0, -100);
 
     return camera;
