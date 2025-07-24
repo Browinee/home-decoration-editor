@@ -24,3 +24,29 @@ export async function loadWindow() {
         return winModel;
     }
 }
+
+
+let doorModel: { model: THREE.Group, size: THREE.Vector3} | null = null;
+
+export async function loadDoor() {
+    if(doorModel !== null) {
+        return doorModel;
+    } else {
+        const group = new THREE.Group();
+        const loader = new GLTFLoader();
+        const gltf = await loader.loadAsync("./door.glb");
+        group.add(gltf.scene);
+
+        const box = new THREE.Box3();
+        box.expandByObject(gltf.scene);
+
+        const size = box.getSize(new THREE.Vector3());
+        // console.log('size', size)
+        doorModel =  {
+            model: group,
+            size
+        };
+        return doorModel;
+    }
+}
+
