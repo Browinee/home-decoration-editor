@@ -23,9 +23,20 @@ interface Wall {
   }[];
 }
 
+interface Floor {
+  points: { x: number; z: number }[];
+}
+
+interface Ceiling {
+  points: { x: number; z: number }[];
+  height: number;
+}
+
 interface State {
   data: {
     walls: Wall[];
+    floors: Floor[];
+    ceilings: Ceiling[];
   };
 }
 const useHouseStore = create<State>((set, get) => {
@@ -91,6 +102,31 @@ const useHouseStore = create<State>((set, get) => {
           ],
         },
       ],
+      floors: [
+        {
+            points: [
+                { x: 0, z: 0},
+                { x: 0, z: 800},
+                { x: 800, z: 800},
+                { x: 800, z: 0},
+                { x: 0, z: 0 }
+            ]
+        }
+    ],
+    ceilings: [
+      {
+          points: [
+              { x: 0, z: 0},
+              { x: 0, z: 800},
+              { x: 800, z: 800},
+              { x: 800, z: 0},
+              { x: 0, z: 0 }
+          ],
+          height: 500
+      }
+  ]
+
+
     },
   };
 });
