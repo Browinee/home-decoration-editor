@@ -37,7 +37,7 @@ function Main() {
       }
     };
   }, []);
-  const loadWall = async (scene: THREE.Scene) => {
+  const loadWall = async (house: THREE.Group) => {
     const walls = await Promise.all(
       data.walls.map(async (item) => {
         const shape = new THREE.Shape();
@@ -102,9 +102,9 @@ function Main() {
       })
     );
 
-    scene.add(...walls);
+    house.add(...walls);
   };
-  const loadFloor = async (scene: THREE.Scene) => {
+  const loadFloor = async (house: THREE.Group) => {
     const floors = data.floors.map((item) => {
       const shape = new THREE.Shape();
       shape.moveTo(item.points[0].x, item.points[0].z);
@@ -121,10 +121,10 @@ function Main() {
 
       return floor;
     });
-    scene.add(...floors);
+    house.add(...floors);
   };
 
-  const loadCeiling = async (scene: THREE.Scene) => {
+  const loadCeiling = async (house: THREE.Group) => {
     const ceilings = data.ceilings.map((item) => {
       const shape = new THREE.Shape();
       shape.moveTo(item.points[0].x, item.points[0].z);
@@ -142,14 +142,20 @@ function Main() {
       ceiling.position.y = item.height;
       return ceiling;
     });
-    scene.add(...ceilings);
+    house.add(...ceilings);
   };
   const { data } = useHouseStore();
   useEffect(() => {
     const scene = scene3DRef.current!;
-    loadWall(scene);
-    loadFloor(scene);
-    loadCeiling(scene);
+    const house = new THREE.Group()
+    loadWall(house);
+    loadFloor(house);
+    loadCeiling(house);
+    scene.add(house);
+    const box3 = new THREE.Box3();
+    box3.expandByObject(house);
+    const center = box3.getCenter(new THREE.Vector3());
+    house.position.set(-center.x, -center.y, -center.z);
   }, [data]);
 
   useEffect(() => {
