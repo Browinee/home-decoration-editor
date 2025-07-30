@@ -49,6 +49,7 @@ function Main() {
 
         const windowModels = [];
         for (const win of item.windows || []) {
+
           const path = new THREE.Path();
           const { left, bottom } = win.leftBottomPosition;
           path.moveTo(left, bottom);
@@ -59,9 +60,11 @@ function Main() {
           shape.holes.push(path);
 
           const { model, size } = await loadWindow();
+
           model.position.x = win.leftBottomPosition.left + win.width / 2;
           model.position.y = win.leftBottomPosition.bottom + win.height / 2;
           model.scale.set(win.width / size.x, win.height / size.y, 1);
+
           windowModels.push(model);
         }
         const doorModels = [];

@@ -1,12 +1,8 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-let winModel: { model: THREE.Group; size: THREE.Vector3 } | null = null;
 
 export async function loadWindow() {
-  if (winModel !== null) {
-    return winModel;
-  } else {
     const group = new THREE.Group();
     const loader = new GLTFLoader();
     const gltf = await loader.loadAsync("./window.glb");
@@ -16,20 +12,15 @@ export async function loadWindow() {
     box.expandByObject(gltf.scene);
 
     const size = box.getSize(new THREE.Vector3());
-    winModel = {
+    const winModel = {
       model: group,
       size,
     };
     return winModel;
-  }
 }
 
-let doorModel: { model: THREE.Group; size: THREE.Vector3 } | null = null;
 
 export async function loadDoor() {
-  if (doorModel !== null) {
-    return doorModel;
-  } else {
     const group = new THREE.Group();
     const loader = new GLTFLoader();
     const gltf = await loader.loadAsync("./door.glb");
@@ -40,12 +31,11 @@ export async function loadDoor() {
 
     const size = box.getSize(new THREE.Vector3());
     // console.log('size', size)
-    doorModel = {
+    const doorModel = {
       model: group,
       size,
     };
     return doorModel;
-  }
 }
 
 
