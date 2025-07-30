@@ -37,7 +37,7 @@ function Main() {
       }
     };
   }, []);
-  const loadWall = async (house: THREE.Group) => {
+  const loadWall = async (house: THREE.Group, data: any) => {
     const walls = await Promise.all(
       data.walls.map(async (item) => {
         const shape = new THREE.Shape();
@@ -91,8 +91,8 @@ function Main() {
         });
         const wall = new THREE.Mesh(geometry, material);
         wall.position.set(item.position.x, item.position.y, item.position.z);
-        wall.add(...windowModels);
-        wall.add(...doorModels);
+        windowModels.length && wall.add(...windowModels);
+        doorModels.length && wall.add(...doorModels);
         if (item.rotationY) {
           wall.rotation.y = item.rotationY;
         }
@@ -103,7 +103,7 @@ function Main() {
 
     house.add(...walls);
   };
-  const loadFloor = async (house: THREE.Group) => {
+  const loadFloor = async (house: THREE.Group, data: any) => {
     const floors = data.floors.map((item) => {
       const shape = new THREE.Shape();
       shape.moveTo(item.points[0].x, item.points[0].z);
@@ -123,7 +123,7 @@ function Main() {
     house.add(...floors);
   };
 
-  const loadCeiling = async (house: THREE.Group) => {
+  const loadCeiling = async (house: THREE.Group, data: any) => {
     const ceilings = data.ceilings.map((item) => {
       const shape = new THREE.Shape();
       shape.moveTo(item.points[0].x, item.points[0].z);
@@ -151,9 +151,9 @@ function Main() {
       const house = new THREE.Group();
 
       // 等待所有異步操作完成
-      await loadWall(house);
-      await loadFloor(house);
-      await loadCeiling(house);
+      await loadWall(house, data);
+      await loadFloor(house, data);
+      await loadCeiling(house, data);
 
       // 所有內容都載入完成後，再添加到場景
       scene.add(house);
@@ -166,7 +166,7 @@ function Main() {
     };
 
     loadHouse();
-  }, [scene3DRef]);
+  }, [ data]);
 
   useEffect(() => {
     // const scene = scene2DRef.current!;
