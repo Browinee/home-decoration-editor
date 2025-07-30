@@ -25,6 +25,7 @@ export interface Wall {
 
 export interface Floor {
   points: { x: number; z: number }[];
+  textureUrl?: string;
 }
 
 export interface Ceiling {

@@ -16,7 +16,6 @@ export async function loadWindow() {
     box.expandByObject(gltf.scene);
 
     const size = box.getSize(new THREE.Vector3());
-    console.log("loadWindow size", size);
     winModel = {
       model: group,
       size,
@@ -50,9 +49,9 @@ export async function loadDoor() {
 }
 
 
-export  function loadFloorTexture() {
+export  function loadFloorTexture(textureUrl?: string) {
     const textureLoader = new THREE.TextureLoader();
-    const floorTexture = textureLoader.load("./floor-texture.png");
+    const floorTexture = textureLoader.load(textureUrl || "./floor-texture.png");
     floorTexture.colorSpace = THREE.SRGBColorSpace;
     floorTexture.wrapS = THREE.RepeatWrapping;
     floorTexture.wrapT = THREE.RepeatWrapping;

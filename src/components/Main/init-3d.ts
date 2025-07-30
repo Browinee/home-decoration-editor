@@ -23,7 +23,7 @@ const setupLights = (scene: THREE.Scene) => {
     scene.add(directionalLight);
 
     // 環境光
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2.5);
     scene.add(ambientLight);
 };
 
@@ -32,8 +32,8 @@ const createCamera = () => {
     const width = window.innerWidth;
     const height = window.innerHeight - 60;
 
-    const camera = new THREE.PerspectiveCamera(60, width / height, 1, 10000);
-    camera.position.set(1500, 1500, 1000);
+    const camera = new THREE.PerspectiveCamera(60, width / height, 1, 20000);
+    camera.position.set(10000, 1500, 10000);
 
     camera.lookAt(200, 0, -100);
 

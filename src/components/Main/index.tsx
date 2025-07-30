@@ -81,7 +81,6 @@ function Main() {
           model.rotateY(Math.PI / 2);
           model.position.x = door.leftBottomPosition.left + door.width / 2;
           model.position.y = door.leftBottomPosition.bottom + door.height / 2;
-
           doorModels.push(model);
         }
         const geometry = new THREE.ExtrudeGeometry(shape, {
@@ -113,7 +112,7 @@ function Main() {
       }
       const geometry = new THREE.ShapeGeometry(shape);
       const material = new THREE.MeshPhongMaterial({
-        map: loadFloorTexture(),
+        map: loadFloorTexture(item.textureUrl),
         side: THREE.BackSide,
       });
       const floor = new THREE.Mesh(geometry, material);
@@ -147,19 +146,30 @@ function Main() {
   const { data } = useHouseStore();
   useEffect(() => {
     const scene = scene3DRef.current!;
-    const house = new THREE.Group()
-    loadWall(house);
-    loadFloor(house);
-    loadCeiling(house);
-    scene.add(house);
-    const box3 = new THREE.Box3();
-    box3.expandByObject(house);
-    const center = box3.getCenter(new THREE.Vector3());
-    house.position.set(-center.x, -center.y, -center.z);
-  }, [data]);
+
+    const loadHouse = async () => {
+      const house = new THREE.Group();
+
+      // 等待所有異步操作完成
+      await loadWall(house);
+      await loadFloor(house);
+      await loadCeiling(house);
+
+      // 所有內容都載入完成後，再添加到場景
+      scene.add(house);
+
+      // 計算中心點並調整位置
+      const box = new THREE.Box3();
+      box.expandByObject(house);
+      const center = box.getCenter(new THREE.Vector3());
+      house.position.set(-center.x, -center.y, -center.z);
+    };
+
+    loadHouse();
+  }, [scene3DRef]);
 
   useEffect(() => {
-    const scene = scene2DRef.current!;
+    // const scene = scene2DRef.current!;
     // const walls = data.walls.map((item) => {
     //   const shape = new THREE.Shape();
     //   shape.moveTo(item.p1.x, item.p1.z);
@@ -175,7 +185,6 @@ function Main() {
     //   wall.rotateX(-Math.PI / 2);
     //   return wall;
     // });
-
     // scene.add(...walls);
   }, [data]);
 
