@@ -11,14 +11,40 @@ function Main() {
   const container2DRef = useRef<HTMLDivElement>(null);
   const scene3DRef = useRef<THREE.Scene>(null);
   const scene2DRef = useRef<THREE.Scene>(null);
+  const camera3DRef = useRef<THREE.Camera>(null);
   const [curMode, setCurMode] = useState("3d");
+  const wallsVisibilityCalc = () => {
+    const camera = camera3DRef.current!;
+    const scene = scene3DRef.current;
+
+    if(!camera) {
+        return;
+    }
+    data.walls.forEach((item, index) => {
+        const cameraDirection = new THREE.Vector3();
+        camera.getWorldDirection(cameraDirection);
+
+        const wallDirection = new THREE.Vector3(item.normal.x, item.normal.y, item.normal.z);
+
+        const obj = scene?.getObjectByName('wall' + index)!;
+        if(!obj) {
+            return;
+        }
+        if(wallDirection.dot(cameraDirection) > 0) {
+            obj.visible = false;
+        } else {
+            obj.visible = true;
+        }
+
+    })
+}
 
   useEffect(() => {
     if (!container3DRef.current) return;
 
-    const { scene } = init3D(container3DRef.current);
+    const { scene, camera } = init3D(container3DRef.current, wallsVisibilityCalc);
     scene3DRef.current = scene;
-
+    camera3DRef.current = camera;
     return () => {
       if (container3DRef.current) {
         container3DRef.current.innerHTML = "";
@@ -39,7 +65,7 @@ function Main() {
   }, []);
   const loadWall = async (house: THREE.Group, data: any) => {
     const walls = await Promise.all(
-      data.walls.map(async (item) => {
+      data.walls.map(async (item, index) => {
         const shape = new THREE.Shape();
         shape.moveTo(0, 0);
         shape.lineTo(0, item.height);
@@ -100,6 +126,7 @@ function Main() {
           wall.rotation.y = item.rotationY;
         }
 
+        wall.name = 'wall' + index;
         return wall;
       })
     );

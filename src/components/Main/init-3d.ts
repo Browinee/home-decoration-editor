@@ -65,9 +65,10 @@ const createRenderer = () => {
 };
 
 // 設置渲染循環
-const setupRenderLoop = (renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera) => {
+const setupRenderLoop = (renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera, wallsVisibilityCalc: () => void) => {
     const render = () => {
         renderer.render(scene, camera);
+        wallsVisibilityCalc();
         requestAnimationFrame(render);
     };
 
@@ -124,7 +125,7 @@ const setupEdgeClick = (renderer: THREE.WebGLRenderer, camera: THREE.Camera, sce
     })
 }
 // 主要的初始化函數
-export const init3D = (dom: HTMLElement) => {
+export const init3D = (dom: HTMLElement, wallsVisibilityCalc: () => void) => {
     const scene = createScene();
 
     setupLights(scene);
@@ -139,7 +140,7 @@ export const init3D = (dom: HTMLElement) => {
 
 
     // 5. 設置渲染循環
-    setupRenderLoop(renderer, scene, camera);
+    setupRenderLoop(renderer, scene, camera, wallsVisibilityCalc);
 
     // 6. 將渲染器添加到 DOM
     dom.append(renderer.domElement);
