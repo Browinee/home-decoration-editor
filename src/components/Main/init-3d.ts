@@ -94,6 +94,35 @@ const setupControls = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {
     return controls;
 };
 
+const GLOBAL_CLICKED_EDGES:THREE.Line[] = [];
+const setupEdgeClick = (renderer: THREE.WebGLRenderer, camera: THREE.Camera, scene: THREE.Scene) => {
+    renderer.domElement.addEventListener('click', (event) => {
+        const y = -((event.offsetY / window.innerHeight) * 2 - 1);
+        const x = (event.offsetX / window.innerWidth) * 2 - 1;
+
+        const rayCaster = new THREE.Raycaster();
+        rayCaster.setFromCamera(new THREE.Vector2(x, y), camera);
+        const intersections = rayCaster.intersectObjects(scene.children);
+
+        GLOBAL_CLICKED_EDGES.forEach(edge => {
+            edge.parent?.remove(edge);
+        })
+
+        if(intersections.length) {
+            const obj = intersections[0].object as THREE.Mesh;
+            if(obj.isMesh) {
+                const geometry = new THREE.EdgesGeometry(obj.geometry);
+                const material = new THREE.LineBasicMaterial({
+                    color: 'blue'
+                });
+                const line = new THREE.LineSegments(geometry, material);
+                obj.add(line);
+                GLOBAL_CLICKED_EDGES.push(line);
+            }
+        }
+
+    })
+}
 // 主要的初始化函數
 export const init3D = (dom: HTMLElement) => {
     const scene = createScene();
@@ -105,6 +134,9 @@ export const init3D = (dom: HTMLElement) => {
 
     // 4. 創建渲染器
     const renderer = createRenderer();
+
+
+
 
     // 5. 設置渲染循環
     setupRenderLoop(renderer, scene, camera);
@@ -118,6 +150,7 @@ export const init3D = (dom: HTMLElement) => {
     // 8. 設置控制器
     const controls = setupControls(camera, renderer);
 
+    setupEdgeClick(renderer, camera, scene);
     return {
         scene,
         camera,
