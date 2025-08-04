@@ -165,7 +165,7 @@ function Main() {
       const box = new THREE.Box3();
       box.expandByObject(house);
       const center = box.getCenter(new THREE.Vector3());
-      house.position.set(-center.x, -center.y, -center.z);
+      house.position.set(-center.x, 0, -center.z);
     };
 
     loadHouse();

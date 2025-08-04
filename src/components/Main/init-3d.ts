@@ -12,6 +12,16 @@ const createScene = () => {
     const axesHelper = new THREE.AxesHelper(5000);
     scene.add(axesHelper);
 
+    const gridHelper = new THREE.GridHelper(
+        100000,
+        500,
+        'white',
+        'white'
+    );
+
+    scene.add(gridHelper);
+    gridHelper.position.y = -100;
+
     return scene;
 };
 
@@ -49,7 +59,7 @@ const createRenderer = () => {
         antialias: true
     });
     renderer.setSize(width, height);
-    renderer.setClearColor('lightyellow');
+    renderer.setClearColor('skyblue');
 
     return renderer;
 };
